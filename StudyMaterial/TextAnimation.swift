@@ -23,9 +23,9 @@ struct AnimatingText: View {
             Text("Hello, SwiftUI!")
                 .offset(y: isAnimating ? -200 : 0)
                 .animation(.easeInOut(duration: 1), value: isAnimating)
-            Text("Hello, SwiftUI!")
-                .font(isAnimating ? .largeTitle : .body)
-                .animation(.easeInOut(duration: 1), value: isAnimating)
+//            Text("Hello, SwiftUI!")
+//                .font(isAnimating ? .largeTitle : .body)
+//                .animation(.easeInOut(duration: 1), value: isAnimating)
             
             Spacer()
             
