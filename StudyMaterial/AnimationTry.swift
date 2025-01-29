@@ -1,27 +1,24 @@
-//
-//  AnimationTry.swift
-//  StudyMaterial
-//
-//  Created by Jeevith on 27/01/25.
-//
-
 import SwiftUI
 
 struct AnimationTry: View {
+    // Gradients for Sun and Moon
     let SunColor = LinearGradient(gradient: Gradient(colors: [Color(#colorLiteral(red: 1, green: 0.75, blue: 0, alpha: 1)),  // Sun-like gold
                                                               Color(#colorLiteral(red: 1, green: 0.9, blue: 0.2, alpha: 1)),  // Bright yellow
                                                               Color(#colorLiteral(red: 1, green: 0.6, blue: 0, alpha: 1))]), // Warm orange
                                    startPoint: .topTrailing,
                                    endPoint: .bottomLeading)
-    let dayBackground = LinearGradient(colors: [.blue.opacity(0.7), .blue], startPoint: .topLeading, endPoint: .bottomTrailing)
+    let MoonColor = LinearGradient(
+        gradient: Gradient(colors: [Color.white, Color.gray]),
+        startPoint: .top,
+        endPoint: .bottom
+    )
     
+    // State for car animation and day/night toggle
     @State private var carOffset: CGFloat = 300
+    @State private var isDay: Bool = true
     
-    func day() -> some View {
+    func dayView() -> some View {
         ZStack {
-            dayBackground
-                .edgesIgnoringSafeArea(.all)
-            
             Image("road")
                 .resizable()
                 .scaledToFill()
@@ -33,20 +30,71 @@ struct AnimationTry: View {
                 .frame(width: 100, height: 100)
                 .offset(x: 0, y: -340)
             
+            // Animated Car
             Image("car")
                 .resizable()
                 .scaledToFit()
                 .frame(width: 100, height: 50)
-                .offset(x: 50 , y: carOffset)
+                .offset(x: 50, y: carOffset)
                 .animation(.easeInOut(duration: 3).repeatForever(autoreverses: false), value: carOffset)
         }
         .onAppear {
-            carOffset = -10
+            carOffset = -10 // Start car animation on load
+        }
+    }
+    
+    func nightView() -> some View {
+        ZStack {
+            Image("Night")
+                .resizable()
+                .scaledToFill()
+                .edgesIgnoringSafeArea(.all)
+            
+            Circle()
+                .fill(MoonColor)
+                .shadow(color: .white, radius: 10)
+                .frame(width: 100, height: 100)
+                .offset(x: 0, y: -340)
+            
+            Image("mountain")
+                .resizable()
+                .scaledToFit()
+                .frame(width: UIScreen.main.bounds.width, height: 400)
+                .offset(y: 290)
         }
     }
     
     var body: some View {
-        day()
+        ZStack {
+            // Smooth transition between day and night
+            Group {
+                if isDay {
+                    dayView()
+                } else {
+                    nightView()
+                }
+            }
+            .transition(.opacity)
+            .animation(.easeInOut(duration: 1), value: isDay)
+            
+            // Button to toggle modes
+            VStack {
+                Spacer()
+                Button(action: {
+                    isDay.toggle()
+                }) {
+                    Text(isDay ? "Switch to Night Mode" : "Switch to Day Mode")
+                        .font(.headline)
+                        .frame(width: 200, height: 40)
+                        .background(Color.blue)
+                        .foregroundColor(.white)
+                        .cornerRadius(10)
+                        .shadow(radius: 5)
+                }
+                .padding(.bottom, 40)
+            }
+        }
+        
     }
 }
 
