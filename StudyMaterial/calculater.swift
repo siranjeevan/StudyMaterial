@@ -1,6 +1,3 @@
-
-
-
 import SwiftUI
 
 struct Calculator: View {
@@ -11,11 +8,13 @@ struct Calculator: View {
         "0", ".", "=", "+",
         "(", ")", "C", "AC"
     ]
-    @State var action = ""
-    @State var Number = 0
-    @State var leftsite : [String] = []
-    @State var rightsite : [String] = []
-    @State private var isAnimating = false
+
+    @State var Operater = ""
+    @State var isOperaterSelected: Bool = false
+    @State var leftsite: [String] = []
+    @State var rightsite: [String] = []
+    @State var result: String = "0" // Stores the calculation result
+
     func calculateStyle(key: String) -> some View {
         ZStack {
             RoundedRectangle(cornerRadius: 10)
@@ -24,24 +23,57 @@ struct Calculator: View {
                 .shadow(color: Color.blue, radius: 10)
 
             Button(action: {
-                isAnimating.toggle()
-                self.action = key
-                self.leftsite.append(contentsOf: ["\(key)"])
+                if key == "+" || key == "-" || key == "*" || key == "/" {
+                    self.isOperaterSelected = true
+                    self.Operater = key
+                } else if key == "=" {
+                    calculateResult()
+                } else if key == "C" {
+                    if isOperaterSelected {
+                        rightsite.removeAll()
+                    } else {
+                        leftsite.removeAll()
+                    }
+                } else if key == "AC" {
+                    resetCalculator()
+                } else {
+                    if isOperaterSelected {
+                        self.rightsite.append(key)
+                    } else {
+                        self.leftsite.append(key)
+                    }
+                }
             }) {
                 Text(key)
-                    .foregroundStyle(isAnimating ? .red : .purple)
-                    .animation(.easeInOut(duration: 1), value: isAnimating)
                     .font(.title)
                     .fontWeight(.bold)
-                    .foregroundColor(.black)
             }
-            
         }
     }
-    func NumberJoin() -> Int
-    {
-        self.Number = Int(leftsite.joined()) ?? 0
-        return self.Number
+
+    func NumberDisplay() -> String {
+        return leftsite.joined() + (Operater.isEmpty ? "" : " \(Operater) ") + rightsite.joined()
+    }
+
+    func calculateResult() {
+        let leftNumber = Int(leftsite.joined()) ?? 0
+        let rightNumber = Int(rightsite.joined()) ?? 0
+
+        switch Operater {
+        case "+": result = "\(leftNumber + rightNumber)"
+        case "-": result = "\(leftNumber - rightNumber)"
+        case "*": result = "\(leftNumber * rightNumber)"
+        case "/": result = rightNumber != 0 ? "\(leftNumber / rightNumber)" : "Error"
+        default: result = "0"
+        }
+    }
+
+    func resetCalculator() {
+        leftsite.removeAll()
+        rightsite.removeAll()
+        Operater = ""
+        isOperaterSelected = false
+        result = "0"
     }
 
     var body: some View {
@@ -55,23 +87,25 @@ struct Calculator: View {
             RoundedRectangle(cornerRadius: 10)
                 .fill(Color.white)
                 .frame(width: 380, height: 100)
-                .shadow(radius: 10)
+                .shadow(color: Color.blue, radius: 10)
                 .padding(.bottom, 10)
+                .overlay(
+                    VStack {
+                        Text(NumberDisplay())
+                            .font(.title)
+                            .foregroundColor(Color.red)
+                        Text("Result: \(result)")
+                            .font(.title2)
+                            .foregroundColor(.blue)
+                    }
+                )
 
             LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 10), count: 4), spacing: 20) {
                 ForEach(calculatorKeys, id: \.self) { k in
                     calculateStyle(key: k)
                 }
-                
             }
-            .overlay(
-                Text("\(NumberJoin())")
-                    .frame(width: 380, height: 80)
-                    .font(.title)
-                    .offset(x : 0, y: -230)
-                    .foregroundColor(Color.red)
-                )
-            
+
         }
     }
 }
