@@ -1,13 +1,13 @@
-//
-//  Question.swift
-//  StudyMaterial
-//
-//  Created by Jeevith  on 30/01/25.
-//
-
 import SwiftUI
 
 struct Question: View {
+    let Question : [String] = ["What does CPU stand for?"]
+    let options = [
+        "A) Central Processing Unit",
+        "B) Computer Processing Unit",
+        "C) Central Program Unit",
+        "D) Central Power Unit"
+    ]
     func style() -> some View {
         Button {
             
@@ -19,7 +19,6 @@ struct Question: View {
             .shadow(radius: 10)
             .padding(.top , 5)
         }
-
     }
     var body: some View {
         Text("Question")
@@ -36,6 +35,14 @@ struct Question: View {
             .offset(x: 0, y: -250)
         )
         .overlay(
+            Text("\(Question[0])")
+                .font(.headline)
+                .frame(width: 380, height: 150)
+                .foregroundColor(.black)
+                .bold()
+                .offset(x: 0, y: -250)
+            )
+        .overlay(
             LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 0), count: 1), spacing: 10)
             {
                 ForEach(0..<4) { _ in
@@ -49,10 +56,9 @@ struct Question: View {
             }, label: {
                 Text("Check")
                     .frame(width: 100, height: 40)
-                .background(Color.white)
-                
-                .cornerRadius(20)
-            .shadow(radius: 10)
+                    .background(Color.white)
+                    .cornerRadius(20)
+                    .shadow(radius: 10)
             }
         )
             .offset(x: 0, y: 350)
