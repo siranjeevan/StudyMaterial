@@ -10,10 +10,13 @@ struct Calculator: View {
     ]
 
     @State var Operater = ""
+    @State var isPointleft : Bool = false
+    @State var isPointright : Bool = false
     @State var isOperaterSelected: Bool = false
     @State var leftsite: [String] = []
     @State var rightsite: [String] = []
-    @State var result: String = "0" // Stores the calculation result
+    @State var DoubleResult: String = "0"
+    @State var isAnimation: Bool = false
 
     func calculateStyle(key: String) -> some View {
         ZStack {
@@ -43,6 +46,8 @@ struct Calculator: View {
                         self.leftsite.append(key)
                     }
                 }
+                isAnimation.toggle()
+                    
             }) {
                 Text(key)
                     .font(.title)
@@ -56,24 +61,40 @@ struct Calculator: View {
     }
 
     func calculateResult() {
-        let leftNumber = Int(leftsite.joined()) ?? 0
-        let rightNumber = Int(rightsite.joined()) ?? 0
+        isPointleft = leftsite.contains(".")
+        isPointright = rightsite.contains(".")
+
+        var leftNumber: Double = 0
+        var rightNumber: Double = 0
+
+        if !isPointleft {
+            leftNumber = Double(Int(leftsite.joined()) ?? 0)
+        } else {
+            leftNumber = Double(leftsite.joined()) ?? 0.0
+        }
+
+        if !isPointright {
+            rightNumber = Double(Int(rightsite.joined()) ?? 0)
+        } else {
+            rightNumber = Double(rightsite.joined()) ?? 0.0
+        }
 
         switch Operater {
-        case "+": result = "\(leftNumber + rightNumber)"
-        case "-": result = "\(leftNumber - rightNumber)"
-        case "*": result = "\(leftNumber * rightNumber)"
-        case "/": result = rightNumber != 0 ? "\(leftNumber / rightNumber)" : "Error"
-        default: result = "0"
+        case "+": DoubleResult = "\(leftNumber + rightNumber)"
+        case "-": DoubleResult = "\(leftNumber - rightNumber)"
+        case "*": DoubleResult = "\(leftNumber * rightNumber)"
+        case "/": DoubleResult = rightNumber != 0 ? "\(leftNumber / rightNumber)" : "0"
+        default: DoubleResult = "0"
         }
     }
+
 
     func resetCalculator() {
         leftsite.removeAll()
         rightsite.removeAll()
         Operater = ""
         isOperaterSelected = false
-        result = "0"
+        DoubleResult = "0"
     }
 
     var body: some View {
@@ -93,8 +114,10 @@ struct Calculator: View {
                     VStack {
                         Text(NumberDisplay())
                             .font(.title)
+                            .foregroundStyle(isAnimation ? .red : .purple)
+                            .animation(.easeInOut(duration: 1), value: isAnimation)
                             .foregroundColor(Color.red)
-                        Text("Result: \(result)")
+                        Text("Result: \(DoubleResult)")
                             .font(.title2)
                             .foregroundColor(.blue)
                     }
