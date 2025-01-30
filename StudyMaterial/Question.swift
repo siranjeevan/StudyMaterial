@@ -57,10 +57,6 @@ struct Question: View {
         )
             .offset(x: 0, y: 350)
             )
-        
-        
-        
-        
     }
 }
 
