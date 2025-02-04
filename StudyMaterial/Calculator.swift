@@ -46,6 +46,7 @@ struct Calculator: View {
                         self.leftsite.append(key)
                     }
                 }
+                
                 isAnimation.toggle()
                     
             }) {

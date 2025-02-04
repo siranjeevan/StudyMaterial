@@ -75,35 +75,39 @@ struct Question: View {
                 .bold()
                 .offset(x: 0, y: -250)
             )
-        .overlay(
-            Button(action: {
-                    questionNumber += 1
-                    optionIndex += 1
-                
-            }, label: {
-                Text("Next")
-                    .frame(width: 100, height: 40)
-                    .background(Color.white)
-                    .cornerRadius(20)
-                    .shadow(radius: 10)
-            }
-        )
-            .offset(x: 0, y: 350)
-            )
-        .overlay(
-            VStack
-            {
-                if questionNumber < Question.count - 1  {
-                    ForEach(0..<4) { i in
-                            style(i : i)
+        
+            .overlay(
+                VStack
+                {
+                    if questionNumber < Question.count {
+                        Button(action: {
+                            questionNumber += 1
+                            optionIndex += 1
+                            
+                        }, label: {
+                            Text("Next")
+                                .frame(width: 100, height: 40)
+                                .background(Color.white)
+                                .cornerRadius(20)
+                                .shadow(radius: 10)
+                        }
+                        )
+                        .offset(x: 0, y: 350)
+                        
+                        .overlay(
+                            VStack
+                            {
+                                    ForEach(0..<4) { i in
+                                            style(i : i)
+                                    }
+                            }
+                        )
+                    }
+                    else {
+                        result()
                     }
                 }
-                else
-                {
-                    result()
-                }
-            }
-        )
+                )
     }
 }
 
