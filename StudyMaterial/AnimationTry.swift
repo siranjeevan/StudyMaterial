@@ -66,7 +66,7 @@ struct AnimationTry: View {
     
     var body: some View {
         ZStack {
-            // Smooth transition between day and night
+            
             Group {
                 if isDay {
                     dayView()
@@ -77,7 +77,6 @@ struct AnimationTry: View {
             .transition(.opacity)
             .animation(.easeInOut(duration: 1), value: isDay)
             
-            // Button to toggle modes
             VStack {
                 Spacer()
                 Button(action: {
