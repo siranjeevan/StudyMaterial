@@ -140,14 +140,11 @@ struct QuestionGametab1: View {
                                     .foregroundColor(.white)
                                     .cornerRadius(20)
                                     .shadow(radius: 10)
-                                
                             }
                             .disabled(!isAnswered)
                             .offset(x : 120 , y : -5)
                         }
-
                     }
-        
                 }
         }
         .frame(maxWidth : .infinity , maxHeight: .infinity)
