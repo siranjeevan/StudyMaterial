@@ -48,7 +48,7 @@ struct QuestionGametab1: View {
     }
     var body: some View {
         VStack
-        {
+{
             Text("Questions")
                 .font(.largeTitle)
                 .bold()
@@ -62,16 +62,16 @@ struct QuestionGametab1: View {
                                 .foregroundColor(.white)
                                 .frame(width: 350, height: 150)
                                 .background(LinearGradient(gradient: Gradient(colors: [.black, .white]), startPoint: .top, endPoint: .trailing))
+                            
                                 .bold()
                                 .clipShape(RoundedRectangle(cornerRadius: 15))
-                                .offset(x : 0 , y : -230)
+                                .offset(x : 0 , y : -240)
                         }
                     VStack {
                         ForEach(0..<options[questionNumber].count, id: \.self) { i in
                             Button{
                                 if !isAnswered {
                                     selectedAnswer = options[questionNumber][i]
-                                    checkAnswer()
                                 }
                             }label: {
                                 Text("\(options[questionNumber][i])")
@@ -83,8 +83,47 @@ struct QuestionGametab1: View {
                                     .padding(.top, 5)
                             }
                             .disabled(isAnswered)
-                            .offset(x : 0 , y : 30)
+                            .offset(x : 0 , y : 55)
                         }
+                        
+                        VStack
+                        {
+                            Button {
+                                if !isAnswered {
+                                    checkAnswer()
+                                }
+                            } label: {
+                                Text("Check")
+                                    .frame(width: 100, height: 40)
+                                    .bold()
+                                    .background(LinearGradient(gradient: Gradient(colors: [.black, .white]), startPoint: .bottom, endPoint: .topTrailing))
+                                    .foregroundColor(.white)
+                                    .cornerRadius(20)
+                                    .shadow(radius: 10)
+                            }
+                            .offset(x : 0 , y : 90)
+                            
+                            Button {
+                                if questionNumber > 0
+                                {
+                                    questionNumber -= 1
+                                    selectedAnswer = nil
+                                    isAnswered = false
+                                }
+                            } label: {
+                                Text("Back")
+                                    .frame(width: 100, height: 40)
+                                    .bold()
+                                    .background(LinearGradient(gradient: Gradient(colors: [.black, .white]), startPoint: .bottom, endPoint: .topTrailing))
+                                    .foregroundColor(.white)
+                                    .cornerRadius(20)
+                                    .shadow(radius: 10)
+                            }
+                            .offset(x : -120 , y : 43)
+
+
+                        }
+                        
                         if questionNumber < Question.count {
                             Button {
                                 if questionNumber < Question.count - 1
@@ -97,14 +136,14 @@ struct QuestionGametab1: View {
                                 Text("Next")
                                     .frame(width: 100, height: 40)
                                     .bold()
-                                    .background(LinearGradient(gradient: Gradient(colors: [.black, .white]), startPoint: .bottom, endPoint: .top))
+                                    .background(LinearGradient(gradient: Gradient(colors: [.black, .white]), startPoint: .bottom, endPoint: .topTrailing))
                                     .foregroundColor(.white)
                                     .cornerRadius(20)
                                     .shadow(radius: 10)
                                 
                             }
                             .disabled(!isAnswered)
-                            .offset(x : 0 , y : 40)
+                            .offset(x : 120 , y : -5)
                         }
 
                     }
