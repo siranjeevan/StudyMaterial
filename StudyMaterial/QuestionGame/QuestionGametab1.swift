@@ -21,10 +21,13 @@ struct QuestionGametab1: View {
         "A) Hyper Text Transfer Protocol",
         "B) Stack"
     ]
+    @State var answerStore :[String] = []
+    
     @State private var questionNumber = 0
     @State private var score = 0
     @State private var selectedAnswer: String? = nil
     @State private var isAnswered = false
+    @State private var j = 0
     
     func checkAnswer() {
         if selectedAnswer == correctAnswers[questionNumber] {
@@ -46,9 +49,13 @@ struct QuestionGametab1: View {
     func Result() -> some View {
         Text("Game Over")
     }
+    func color()
+    {
+        
+    }
     var body: some View {
         VStack
-{
+        {
             Text("Questions")
                 .font(.largeTitle)
                 .bold()
@@ -72,6 +79,7 @@ struct QuestionGametab1: View {
                             Button{
                                 if !isAnswered {
                                     selectedAnswer = options[questionNumber][i]
+                                    j = i
                                 }
                             }label: {
                                 Text("\(options[questionNumber][i])")
@@ -89,9 +97,10 @@ struct QuestionGametab1: View {
                         VStack
                         {
                             Button {
-                                if !isAnswered {
-                                    checkAnswer()
-                                }
+                                checkAnswer()
+                                answerStore.append(options[questionNumber][j])
+                                print(answerStore)
+                                
                             } label: {
                                 Text("Check")
                                     .frame(width: 100, height: 40)
@@ -109,6 +118,7 @@ struct QuestionGametab1: View {
                                     questionNumber -= 1
                                     selectedAnswer = nil
                                     isAnswered = false
+                                    j -= 1
                                 }
                             } label: {
                                 Text("Back")
