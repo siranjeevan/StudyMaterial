@@ -27,7 +27,10 @@ struct QuestionGametab1: View {
     @State private var score = 0
     @State private var selectedAnswer: String? = nil
     @State private var isAnswered = false
-    @State private var j = 0
+    @State var isCheck : Bool = false
+    @State private var optionIndex : Int = 0
+    @State var a : Int = 0
+    @State var Isback : Bool = false
     
     func checkAnswer() {
         if selectedAnswer == correctAnswers[questionNumber] {
@@ -38,7 +41,7 @@ struct QuestionGametab1: View {
     
     func getButtonColor(for option: String) -> Color {
         if isAnswered {
-            if option == correctAnswers[questionNumber] {
+            if option == correctAnswers[questionNumber]{
                 return .green
             } else if option == selectedAnswer {
                 return .red
@@ -46,13 +49,19 @@ struct QuestionGametab1: View {
         }
         return .white
     }
-    func Result() -> some View {
-        Text("Game Over")
+    
+    func Selectanswer(for option: String) -> Color {
+        if isAnswered {
+            if option == answerStore[questionNumber]{
+                return .green
+            }
+            else if option == selectedAnswer {
+                return .red
+            }
+        }
+        return .white
     }
-    func color()
-    {
-        
-    }
+    
     var body: some View {
         VStack
         {
@@ -78,19 +87,21 @@ struct QuestionGametab1: View {
                         ForEach(0..<options[questionNumber].count, id: \.self) { i in
                             Button{
                                 if !isAnswered {
+                                    isCheck = true
                                     selectedAnswer = options[questionNumber][i]
-                                    j = i
+                                    optionIndex = i
                                 }
                             }label: {
                                 Text("\(options[questionNumber][i])")
                                     .frame(width: 350, height: 60)
                                     .background(LinearGradient(gradient: Gradient(colors: [.black, .white]), startPoint: .top, endPoint: .bottom))
-                                    .foregroundColor(getButtonColor(for: options[questionNumber][i]))
+                                    .foregroundColor(a == 0 ? getButtonColor(for: options[questionNumber][i]) : Selectanswer(for: answerStore[questionNumber]))
                                     .cornerRadius(20)
                                     .shadow(radius: 5)
                                     .padding(.top, 5)
                             }
                             .disabled(isAnswered)
+                            .disabled(Isback)
                             .offset(x : 0 , y : 55)
                         }
                         
@@ -98,7 +109,7 @@ struct QuestionGametab1: View {
                         {
                             Button {
                                 checkAnswer()
-                                answerStore.append(options[questionNumber][j])
+                                answerStore.append(options[questionNumber][optionIndex])
                                 print(answerStore)
                                 
                             } label: {
@@ -110,6 +121,7 @@ struct QuestionGametab1: View {
                                     .cornerRadius(20)
                                     .shadow(radius: 10)
                             }
+                            .disabled(!isCheck)
                             .offset(x : 0 , y : 90)
                             
                             Button {
@@ -117,8 +129,8 @@ struct QuestionGametab1: View {
                                 {
                                     questionNumber -= 1
                                     selectedAnswer = nil
-                                    isAnswered = false
-                                    j -= 1
+                                    Isback = true
+                                    a = 1
                                 }
                             } label: {
                                 Text("Back")
@@ -129,6 +141,7 @@ struct QuestionGametab1: View {
                                     .cornerRadius(20)
                                     .shadow(radius: 10)
                             }
+                            .disabled(questionNumber == 0)
                             .offset(x : -120 , y : 43)
 
 
@@ -141,6 +154,8 @@ struct QuestionGametab1: View {
                                     questionNumber += 1
                                     selectedAnswer = nil
                                     isAnswered = false
+                                    isCheck = false
+                                    
                                 }
                             } label:{
                                 Text("Next")
