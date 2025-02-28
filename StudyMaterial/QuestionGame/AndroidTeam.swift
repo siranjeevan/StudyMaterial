@@ -145,6 +145,7 @@ struct Test: View {
                             if game.questionNumber > 0 {
                                 game.questionNumber -= 1
                                 game.selectedAnswer = game.selectOption[game.questionNumber]
+                                game.isCheck = false
                                 game.isAnswered = !game.selectedAnswer!.isEmpty
                             }
                         } label: {
@@ -165,6 +166,7 @@ struct Test: View {
                                 game.questionNumber += 1
                                 game.selectedAnswer = game.selectOption[game.questionNumber]
                                 game.isAnswered = !game.selectedAnswer!.isEmpty
+                                game.isCheck = false
 
                             }
                         } label: {
