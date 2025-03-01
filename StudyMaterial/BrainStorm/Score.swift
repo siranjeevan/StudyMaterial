@@ -9,6 +9,7 @@ import SwiftUI
 
 struct Score: View {
     @ObservedObject var game : BackendViewModel = BackendViewModel()
+    @State var NextPage : Bool = false
     var score: Int
     var body: some View {
         ZStack {
@@ -29,7 +30,7 @@ struct Score: View {
                 .shadow(color : .yellow, radius: 3)
             
             Button {
-                
+                NextPage = true
             } label: {
                 Image("restart")
                     .resizable()
@@ -42,10 +43,9 @@ struct Score: View {
             .offset(x : 100 , y: 200)
             
             Button {
-                if let window = UIApplication.shared.windows.first {
-                    window.rootViewController?.dismiss(animated: true, completion: nil)
+                
                 }
-            } label: {
+                label: {
                 Image("back")
                     .resizable()
                     .frame(width: 30, height: 30)
@@ -68,7 +68,9 @@ struct Score: View {
                     .cornerRadius(10)
             }
             .offset(x : -100 , y: 200)
-            
+            .fullScreenCover(isPresented: $NextPage) {
+                QuestionTab()
+            }
         
         }
         .frame(maxWidth : .infinity , maxHeight: .infinity)

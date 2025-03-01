@@ -51,19 +51,6 @@ struct StartPage: View {
     }
 }
 
-struct NextPage: View {
-    var body: some View {
-        Text("Welcome to the Next Page!")
-            .font(.largeTitle)
-            .foregroundColor(.blue)
-        Button("Go Back") {
-            if let window = UIApplication.shared.windows.first {
-                window.rootViewController?.dismiss(animated: true, completion: nil)
-            }
-        }
-    }
-}
-
 #Preview {
     StartPage()
 }
