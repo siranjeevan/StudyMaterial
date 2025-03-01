@@ -73,7 +73,7 @@ struct Test: View {
     @State private var navigateToGame = false
     
     var body: some View {
-        NavigationView {
+        NavigationStack {
             ZStack {
                 LinearGradient(gradient: Gradient(colors: [Color.pink, Color.white]),
                                startPoint: .topLeading,
@@ -123,11 +123,12 @@ struct Test: View {
                     
                     Button {
                         game.correctAnswer()
-                        print(game.score)
+//                        print(game.score)
                         game.nextTab += 1
                         if game.nextTab == 5 {
                             navigateToGame = true
                         }
+                        
                     } label: {
                         Text("Check")
                             .font(.system(size: 20, weight: .black))
@@ -137,6 +138,9 @@ struct Test: View {
                                                        startPoint: .bottom,
                                                        endPoint: .topTrailing))
                             .cornerRadius(10)
+                            .onAppear{
+                               
+                            }
                     }
                     .disabled(!game.isCheck)
                     
@@ -194,7 +198,7 @@ struct Test: View {
 }
 
 struct Test1: View {
-    @ObservedObject var game = backendViewModel()
+    @StateObject var game : backendViewModel = backendViewModel()
     var body: some View {
             ZStack {
                 LinearGradient(gradient: Gradient(colors: [Color.pink, Color.white]),
@@ -203,8 +207,12 @@ struct Test1: View {
                 .edgesIgnoringSafeArea(.all)
                 
                 Text("Your Score is:")
+                    
                     .font(.system(size: 36 , weight: .black))
                     .padding(.top, -60)
+                    .onAppear {
+                        print(" Score = \(game.score)")
+                    }
                 Text("\(game.score) / \(game.Question.count)")
                     .font(.system(size: 36 , weight: .black))
             }
