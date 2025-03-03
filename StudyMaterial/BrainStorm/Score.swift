@@ -29,6 +29,11 @@ struct Score: View {
                 .offset(x : 10 , y: -30)
                 .shadow(color : .yellow, radius: 3)
             
+            Image("QUIZ4")
+                .resizable()
+                .frame(width: 200, height: 200)
+                .offset(x : -100 , y: 300)
+            
             Button {
                 NextPage = true
             } label: {
@@ -76,4 +81,7 @@ struct Score: View {
         .frame(maxWidth : .infinity , maxHeight: .infinity)
         .background(.yellow)
     }
+}
+#Preview {
+    Score(score: 100)
 }
