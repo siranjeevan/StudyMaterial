@@ -22,7 +22,6 @@ struct StudyMaterialApp: App {
                             .foregroundColor(.white)
                     }
             }
-
         }
         .modelContainer(for: User.self)
     }
