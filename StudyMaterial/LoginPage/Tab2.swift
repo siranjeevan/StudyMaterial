@@ -1,22 +1,20 @@
-//
-//  Tab2.swift
-//  StudyMaterial
-//
-//  Created by Jeevith  on 01/02/25.
-//
-
 import SwiftUI
+import SwiftData
 
 struct Tab2: View {
+    @Environment(\.modelContext) private var context
+    @Query private var users: [User] 
+    
     let buttoncolor = LinearGradient(
         gradient: Gradient(colors: [Color.yellow, Color.blue]),
         startPoint: .leading,
         endPoint: .trailing
     )
-    @State var Email : [String] = []
-    @State var Emailget : String = ""
-    @State var Passwordget : String = ""
-    @State var Password : [String] = []
+    
+    @State var Emailget: String = ""
+    @State var Passwordget: String = ""
+    @State var message : String = ""
+    
     var body: some View {
         Image("pencil")
             .resizable()
@@ -26,17 +24,15 @@ struct Tab2: View {
                     .font(.system(size: 35 , weight: .bold))
                     .foregroundColor(.white)
                     .offset(x: 0, y: -225)
-            }
-            )
+            })
             .overlay(
                 VStack {
-                    RoundedRectangle(cornerRadius: 20 )
+                    RoundedRectangle(cornerRadius: 20)
                         .fill(Color.white)
                         .frame(width: 350, height: 400)
                         .opacity(0.4)
                         .overlay {
-                            HStack
-                            {
+                            HStack {
                                 Text("Email")
                                     .font(.system(size: 20 , weight: .bold))
                                     .offset(x: 20, y: -150)
@@ -50,37 +46,47 @@ struct Tab2: View {
                                     .offset(x: -15, y: -120)
                                     .foregroundColor(.white)
                                     .font(.system(size: 20, weight: .medium))
-                                
                             }
-                                .padding(.top, 20)
-                            HStack
-                            {
-                                
+                            .padding(.top, 20)
+                            
+                            HStack {
                                 Image(systemName: "exclamationmark.lock.fill")
                                     .foregroundColor(.white)
                                     .offset(x: -90, y: -50)
+                                
                                 Text("Password")
                                     .font(.system(size: 20, weight: .bold))
                                     .foregroundColor(.white)
                                     .bold()
                                     .offset(x: -120, y: -80)
                                     .overlay(
-                                        TextField("Type Your Password" ,text: $Passwordget )
+                                        TextField("Type Your Password", text: $Passwordget)
                                             .foregroundColor(.white)
                                             .accentColor(.red)
                                             .font(.system(size: 20, weight: .medium))
-                                            .frame(width: 200, height: 50 )
+                                            .frame(width: 200, height: 50)
                                             .offset(x: -20, y: -50)
                                     )
                             }
                             .padding(.top, 20)
                             
-                            HStack
-                            {
+                            HStack {
                                 Button {
-                                    Email.append(Emailget)
-                                    Password.append(Passwordget)
-                                    print(Email)
+                                    guard !Emailget.isEmpty, !Passwordget.isEmpty else {
+                                        message = "Please fill all fields"
+                                        return
+                                    }
+
+                                    if users.contains(where: { $0.email.lowercased() == Emailget.lowercased() }) {
+                                        message = "Email already exists!"
+                                        return
+                                    }
+
+                                    let user = User(email: Emailget, password: Passwordget)
+                                    context.insert(user)
+                                    Emailget = ""
+                                    Passwordget = ""
+                                    message = "Signup successful!"
                                 } label: {
                                     Text("Login")
                                         .frame(width: 200, height: 30)
@@ -89,12 +95,17 @@ struct Tab2: View {
                                         .cornerRadius(15)
                                 }
                                 .offset(x: 0, y: 30)
-
+                                .overlay{
+                                    Text("\(message)")
+                                        .font(.system(size: 20, weight: .bold))
+                                        .foregroundColor(.white)
+                                        .bold()
+                                        .offset(y : 70)
+                                }
+                                
                             }
-
                         }
                 }
-                
             )
     }
 }

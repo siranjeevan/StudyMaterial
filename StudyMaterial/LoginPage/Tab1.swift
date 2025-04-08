@@ -6,10 +6,14 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct Tab1: View {
-    @State var email = ""
-    @State var password = ""
+    @Query private var users: [User]
+    @State private var email = ""
+    @State private var password = ""
+    @State private var message = ""
+    
     let buttoncolor = LinearGradient(
         gradient: Gradient(colors: [Color.yellow, Color.blue]),
         startPoint: .leading,
@@ -87,7 +91,11 @@ struct Tab1: View {
                             HStack
                             {
                                 Button {
-                                    
+                                    if let user = users.first(where: { $0.email == email && $0.password == password }) {
+                                        message = "Welcome!"
+                                    } else {
+                                        message = "Invalid email or password"
+                                    }
                                 } label: {
                                     Text("Login")
                                         .font(.title2)
@@ -97,6 +105,13 @@ struct Tab1: View {
                                         .cornerRadius(15)
                                 }
                                 .offset(x : 0, y : -60)
+                                .overlay {
+                                    Text("\(message)")
+                                        .font(.system(size: 20, weight: .bold))
+                                        .foregroundColor(.white)
+                                        .bold()
+                                        .offset(y : 70)
+                                }
                             }
                             VStack
                             {
