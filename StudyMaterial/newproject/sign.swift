@@ -6,15 +6,20 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct sign: View {
-    @State private var email1 = ""
-    @State private var password1 = ""
+    @Environment(\.modelContext) private var context
+    @Query private var users: [User]
+    
+    @State private var Emailget = ""
+    @State private var Passwordget = ""
     @State private var showPassword1 = false
+    @State private var message : String?
     var body: some View {
         GeometryReader { geometry in
             ZStack {
-                Image(geometry.size.width < 600 ? "moun1" : "moun")
+                Image("IPhone")
                     .resizable()
                     .edgesIgnoringSafeArea(.all)
                 
@@ -29,7 +34,7 @@ struct sign: View {
                     HStack {
                         Image(systemName: "envelope")
                             .foregroundColor(.white)
-                        TextField("Email", text: $email1)
+                        TextField("Email", text: $Emailget)
                             .foregroundColor(.white)
                             .autocapitalization(.none)
                     }
@@ -41,9 +46,9 @@ struct sign: View {
                         Image(systemName: "lock")
                             .foregroundColor(.white)
                         if showPassword1 {
-                            TextField("Password", text: $password1)
+                            TextField("Password", text: $Passwordget)
                         } else {
-                            SecureField("Password", text: $password1)
+                            SecureField("Password", text: $Passwordget)
                         }
                         Button(action: {
                             showPassword1.toggle()
@@ -57,8 +62,24 @@ struct sign: View {
                     .cornerRadius(15)
                     
                     Button(action: {
+                        guard !Emailget.isEmpty, !Passwordget.isEmpty else {
+                            message = "Please fill all fields"
+                            return
+                        }
+
+                        if users.contains(where: { $0.email.lowercased() == Emailget.lowercased() }) {
+                            message = "Email already exists!"
+                            return
+                        }
+
+                        let user = User(email: Emailget, password: Passwordget)
+                        context.insert(user)
+                        Emailget = ""
+                        Passwordget = ""
+                        message = "Signup successful!"
                     }) {
                         Text("sign in")
+                            .fontWeight(.black)
                             .frame(maxWidth: .infinity)
                             .padding()
                             .background(Color.white.opacity(0.9))
@@ -70,11 +91,18 @@ struct sign: View {
                 }
                 .padding()
                 .frame(maxWidth: geometry.size.width > 600 ? 400 : .infinity)
-                .background(.ultraThinMaterial)
+                .background(Color.white.opacity(0.3))
                 .cornerRadius(25)
                 .shadow(radius: 10)
                 .padding(.horizontal)
                 Spacer()
+                    .overlay {
+                        Text(message ?? "")
+                            .font(.system(size: 25))
+                            .foregroundColor(.white)
+                            .offset(y : 140)
+                        
+                    }
             }
         }
     }

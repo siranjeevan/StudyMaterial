@@ -1,16 +1,20 @@
 import SwiftUI
+import SwiftData
 
 struct page1: View {
     @ObservedObject var networkMonitor = NetworkMonitor()
+    @Query private var users: [User]
     @State private var email = ""
     @State private var password = ""
+    @State private var message : String?
     @State private var showPassword = false
+    @State private var showSignUp = false
     
     var body: some View {
         if networkMonitor.isConnected {
             GeometryReader { geometry in
                 ZStack {
-                    Image(geometry.size.width < 600 ? "moun1" : "moun")
+                    Image("IPhone")
                         .resizable()
                         .edgesIgnoringSafeArea(.all)
                     
@@ -54,9 +58,15 @@ struct page1: View {
                         .cornerRadius(15)
                         
                         Button(action: {
+                            if users.first(where: { $0.email == email && $0.password == password }) != nil {
+                                message = "Welcome!"
+                            } else {
+                                message = "Invalid email or password"
+                            }
                             print("Login tapped")
                         }) {
                             Text("Login")
+                                .fontWeight(.black)
                                 .frame(maxWidth: .infinity)
                                 .padding()
                                 .background(Color.white.opacity(0.9))
@@ -78,11 +88,11 @@ struct page1: View {
                     .shadow(radius: 10)
                     .padding(.horizontal)
                     Spacer()
+        
                     
                     Button {
-                        
+                        showSignUp = true
                     } label: {
-                        
                         HStack {
                             Text("Sign Up")
                                 .font(.system(size: 25 , weight: .bold))
@@ -95,9 +105,14 @@ struct page1: View {
                         }
                     }
                     .offset(x: 10, y: 160)
+                    Text(message ?? "")
+                        .font(.system(size: 20 , weight: .bold))
+                        .foregroundColor(.red)
+                        .offset(y : 200)
+                    .fullScreenCover(isPresented: $showSignUp) {
+                        sign()
+                    }
                 }
-               
-
             }
         }
         else {

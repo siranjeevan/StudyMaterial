@@ -13,9 +13,8 @@ struct StudyMaterialApp: App {
     var body: some Scene {
         WindowGroup {
             TabView {
-                Tab1()
-                Tab2()
-
+                page1()
+                sign()
                 AllUsersView()
                     .tabItem {
                         Label("Database", systemImage: "tray.full")
